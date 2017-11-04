@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@Page.Title</title>
+    <link href="~/Styles/scripture.css" rel="stylesheet" type="text/css" />
+    @RenderSection("head", required: false)
+</head>
+<body>
+    <header>
+        <h1>My Scripture Journal</h1>
+        <img src="https://byui.brightspace.com/content/enforced/308605-Online.2017.Fall.CIT365.01/Course%20Files/Images/scriptures.jpg?_&d2lSessionVal=gwIOqWQugFDdknLxOdqyhUs9Y&ou=308605" />
+    </header>
+    <nav>
+        <table>
+            <tr>
+                <td><a href="~/WebPage1.cshtml">Welcome</a></td>
+                <td><a href="~/ViewAll.cshtml">View All</a></td>
+                <td><a href="~/AddNewScripture.cshtml">Add</a></td>
+            </tr>
+            <tr></tr>
+            <tr></tr>
+        </table>
+    </nav>
+    <main>
+        @RenderBody()
+    </main>
+    <footer>
+        &copy; @DateTime.Now.Year My Scripture Journal
+    </footer>
+</body>
+</html>

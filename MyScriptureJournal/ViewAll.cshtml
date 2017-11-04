@@ -1,0 +1,26 @@
+﻿@{
+    Layout = "~/_Layout1.cshtml";
+    Page.Title = "View All Scriptures";
+}
+<h2>Please review the scriptures you have entered so far.</h2>
+@{ 
+    var db = Database.Open("MyScripture");
+    var selectedData = db.Query("SELECT * FROM scripture");
+    var grid = new WebGrid(source: selectedData, rowsPerPage: 5);
+}
+<div>
+    @grid.GetHtml(
+    tableStyle: "grid",
+    headerStyle: "head",
+    alternatingRowStyle: "alt",
+    columns: grid.Columns(
+        grid.Column(format: @<a href="~/EditScripture?id=@item.id">Edit</a>),
+        grid.Column(format: @<a href="~/DeleteScripture?id=@item.id">Delete</a>),
+        grid.Column("book"),
+        grid.Column("chapter"),
+        grid.Column("verse"),
+        grid.Column("note"),
+        grid.Column("addDate")
+        )
+    )
+</div>

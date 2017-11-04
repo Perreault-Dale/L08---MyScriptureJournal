@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "~/_Layout1.cshtml";
+    Page.Title = "Add New Scripture";
+
+    Validation.RequireField("book", "You must enter a book.");
+    Validation.RequireField("chapter", "You must enter a chapter.");
+    Validation.RequireField("verse", "You must enter a verse.");
+    Validation.RequireField("note", "You must enter a note.");
+
+    var book = "";
+    var chapter = "";
+    var verse = "";
+    var note = "";
+
+    if(IsPost && Validation.IsValid())
+    {
+        book = Request.Form["book"];
+        chapter = Request.Form["chapter"];
+        verse = Request.Form["verse"];
+        note = Request.Form["note"];
+
+        var db = Database.Open("MyScripture");
+        var insertCommand = "INSERT INTO scripture (book,chapter,verse,note,addDate) VALUES (@0, @1, @2, @3, @4)";
+        db.Execute(insertCommand, book, chapter, verse, note, DateTime.Now);
+
+        Response.Redirect("~/WebPage1");
+    }
+}
+<h2>Let's add a new scripture to your journal.</h2>
+@Html.ValidationSummary()
+<form method="post">
+    <fieldset>
+        <legend>Scripture Details</legend>
+        <table>
+            <tr>
+                <td><label for="book">Book:</label></td>
+                <td><input type="text" name="book" value=@Request.Form["book"] /></td>
+                <td>@Html.ValidationMessage("book")</td>
+            </tr>
+            <tr>
+                <td><label for="chapter">Chapter:</label></td>
+                <td><input type="text" name="chapter" value=@Request.Form["chapter"] /></td>
+                <td>@Html.ValidationMessage("chapter")</td>
+            </tr>
+            <tr>
+                <td><label for="verse">Verse:</label></td>
+                <td><input type="text" name="verse" value=@Request.Form["verse"] /></td>
+                <td>@Html.ValidationMessage("verse")</td>
+            </tr>
+            <tr>
+                <td><label for="note">Note:</label></td>
+                <td><textarea cols="50" rows="5" name="note">@Request.Form["note"]</textarea></td>
+                <td>@Html.ValidationMessage("note")</td>
+            </tr>
+            <tr><td></td><td><input type="submit" value="Submit" /></td><td></td></tr>
+        </table>
+        
+    </fieldset>
+</form>

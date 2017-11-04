@@ -1,0 +1,89 @@
+﻿@{
+    Layout = "~/_Layout1.cshtml";
+    Page.Title = "Edit Scripture";
+
+    var id = "";
+    var book = "";
+    int chapter = 0;
+    int verse = 0;
+    var note = "";
+
+    if (!IsPost)
+    {
+        if (!Request.QueryString["id"].IsEmpty() && Request.QueryString["id"].IsInt())
+        {
+            id = Request.QueryString["id"];
+            var db = Database.Open("MyScripture");
+            var getCommand = "SELECT * FROM scripture WHERE id=@0";
+            var row = db.QuerySingle(getCommand, id);
+            if (row != null)
+            {
+                book = row.book;
+                chapter = row.chapter;
+                verse = row.verse;
+                note = row.note;
+            }
+            else
+            {
+                Validation.AddFormError("No scripture found with that ID.");
+            }
+
+        }
+        else
+        {
+            Validation.AddFormError("You did not select a scripture.");
+        }
+    }
+
+    if (IsPost)
+    {
+        Validation.RequireField("book", "You must enter a book.");
+        Validation.RequireField("chapter", "You must enter a chapter.");
+        Validation.RequireField("verse", "You must enter a verse.");
+        Validation.RequireField("note", "You must enter a note.");
+
+        book = Request.Form["book"];
+        chapter = Request.Form["chapter"].AsInt();
+        verse = Request.Form["verse"].AsInt();
+        note = Request.Form["note"];
+        id = Request.Form["id"];
+
+        if (Validation.IsValid())
+        {
+            var db = Database.Open("MyScripture");
+            var updateCommand = "UPDATE scripture SET book=@0, chapter=@1, verse=@2, note=@3 WHERE id=@4";
+            db.Execute(updateCommand, book, chapter, verse, note, id);
+
+            Response.Redirect("~/ViewAll");
+        }
+    }
+}
+<h2>Change the information in a scripture you entered previously.</h2>
+
+@Html.ValidationSummary()
+<form method="post">
+    <fieldset>
+        <legend>Scripture Details</legend>
+        <input type="hidden" name="id" value=@id />
+        <table>
+            <tr>
+                <td><label for="book">Book:</label></td>
+                <td><input type="text" name="book" value=@book /></td>
+            </tr>
+            <tr>
+                <td><label for="chapter">Chapter:</label></td>
+                <td><input type="text" name="chapter" value=@chapter /></td>
+            </tr>
+            <tr>
+                <td><label for="verse">Verse:</label></td>
+                <td><input type="text" name="verse" value=@verse /></td>
+            </tr>
+            <tr>
+                <td><label for="note">Note:</label></td>
+                <td><textarea cols="50" rows="5" name="note">@note</textarea></td>
+            </tr>
+            <tr><td></td><td><input type="submit" value="Submit" /><input type="button" value="Cancel" onclick="@("window.location.href='ViewAll.cshtml'");" /></td></tr>
+        </table>
+
+    </fieldset>
+</form>
